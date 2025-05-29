@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   Typography,
   TextField,
@@ -144,6 +145,8 @@ export default function ManageElection() {
     }
   };
 
+  const navigate = useNavigate();
+
   return (
     <AdminLayout>
       <Box sx={{ p: 3 }}>
@@ -210,6 +213,29 @@ export default function ManageElection() {
             Election Ends In: {processCountdown}
           </Typography>
         )}
+
+        <Divider sx={{ my: 4 }} />
+
+        <Box textAlign="right">
+          <Button
+            variant="outlined"
+            onClick={() => navigate('/election-report')}
+            sx={{
+              color: '#000',
+              textTransform: 'none',
+              px: 4,
+              py: 1.5,
+              border: '1px solid #002345',
+              borderRadius: 2,
+              '&:hover': {
+                backgroundColor: '#F9F9F6',
+              },
+            }}
+          >
+            Generate Election Report
+          </Button>
+        </Box>
+
 
         {loading && (
           <Box textAlign="center" mt={4}>

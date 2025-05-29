@@ -1,5 +1,5 @@
 // context/AuthContext.js
-import React, { createContext, useState } from 'react';
+import React, { createContext, useState, useEffect } from 'react';
 import { supabase } from '../supabaseClient';
 
 export const AuthContext = createContext();
@@ -7,10 +7,19 @@ export const AuthContext = createContext();
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
 
+  // Load user from localStorage when app starts
+  useEffect(() => {
+    const storedUser = localStorage.getItem('bsa_user');
+    if (storedUser) {
+      setUser(JSON.parse(storedUser));
+    }
+  }, []);
+
+  // Save user to localStorage on login
   const login = async (serialNumber) => {
     const { data, error } = await supabase
       .from('voters')
-      .select('id, fullname, role') // make sure these columns exist
+      .select('id, fullname, role')
       .eq('serial_number', serialNumber)
       .single();
 
@@ -19,16 +28,23 @@ export function AuthProvider({ children }) {
       return false;
     }
 
-    setUser({
+    const loggedInUser = {
       id: data.id,
       name: data.fullname,
       role: data.role || 'voter',
-    });
+    };
+
+    setUser(loggedInUser);
+    localStorage.setItem('bsa_user', JSON.stringify(loggedInUser));
 
     return true;
   };
 
-  const logout = () => setUser(null);
+  // Clear user from state and localStorage
+  const logout = () => {
+    setUser(null);
+    localStorage.removeItem('bsa_user');
+  };
 
   return (
     <AuthContext.Provider value={{ user, login, logout }}>
@@ -36,6 +52,50 @@ export function AuthProvider({ children }) {
     </AuthContext.Provider>
   );
 }
+
+
+
+
+
+
+// // context/AuthContext.js
+// import React, { createContext, useState } from 'react';
+// import { supabase } from '../supabaseClient';
+
+// export const AuthContext = createContext();
+
+// export function AuthProvider({ children }) {
+//   const [user, setUser] = useState(null);
+
+//   const login = async (serialNumber) => {
+//     const { data, error } = await supabase
+//       .from('voters')
+//       .select('id, fullname, role')
+//       .eq('serial_number', serialNumber)
+//       .single();
+
+//     if (error || !data) {
+//       console.error('Login error:', error);
+//       return false;
+//     }
+
+//     setUser({
+//       id: data.id,
+//       name: data.fullname,
+//       role: data.role || 'voter',
+//     });
+
+//     return true;
+//   };
+
+//   const logout = () => setUser(null);
+
+//   return (
+//     <AuthContext.Provider value={{ user, login, logout }}>
+//       {children}
+//     </AuthContext.Provider>
+//   );
+// }
 
 
 

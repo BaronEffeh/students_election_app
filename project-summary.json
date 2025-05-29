@@ -1,0 +1,89 @@
+{
+  "projectName": "BSA School Election System",
+  "description": "An internal school election platform where students vote for various positions using serial number-based authentication. Built with React, Supabase, and MUI.",
+  "stack": {
+    "frontend": "React (with Material UI)",
+    "backend": "Supabase (PostgreSQL, Auth, Storage)",
+    "routing": "React Router v6",
+    "auth": "Serial number-based login (custom AuthContext)"
+  },
+  "roles": ["admin", "voter"],
+  "authentication": {
+    "method": "Serial number (voter.serial_number)",
+    "loginComponent": "LoginPage.js",
+    "context": "AuthContext.js",
+    "roleAssignment": "Supabase trigger: set_voter_role"
+  },
+  "supabase": {
+    "tables": {
+      "voters": {
+        "columns": ["id", "fullname", "serial_number", "role", "created_at"]
+      },
+      "candidates": {
+        "columns": ["id", "voter_id", "positions", "photo_url", "created_at"]
+      },
+      "positions": {
+        "columns": ["id", "position", "created_at"]
+      },
+      "votes": {
+        "columns": ["id", "voter_id", "candidate_id", "position", "created_at"]
+      }
+    },
+    "views": {
+      "candidate_with_fullname": {
+        "definition": "SELECT candidates.*, voters.fullname FROM candidates JOIN voters ON candidates.voter_id = voters.id"
+      }
+    },
+    "storage": {
+      "bucket": "photos",
+      "usedFor": "Candidate photo uploads"
+    },
+    "triggers": [
+      {
+        "name": "set_voter_role",
+        "on": "INSERT INTO voters",
+        "action": "Set role = 'voter' by default"
+      }
+    ],
+    "rls": {
+      "enabled": true,
+      "policies": [
+        "Allow read for authenticated users",
+        "Allow insert into votes if user matches voter_id",
+        "Restrict admin-only inserts for certain actions"
+      ]
+    }
+  },
+  "routing": [
+    { "path": "/", "component": "LoginPage", "public": true },
+    { "path": "/dashboard", "component": "Dashboard", "protected": true },
+    { "path": "/vote-now", "component": "VoteNow", "role": "voter" },
+    { "path": "/voting-instructions", "component": "VotingInstructions", "role": "voter" },
+    { "path": "/view-candidates", "component": "ViewCandidates", "role": "admin" },
+    { "path": "/view-voters", "component": "ViewVoters", "role": "admin" },
+    { "path": "/add-candidate", "component": "AddCandidate", "role": "admin" },
+    { "path": "/add-voter", "component": "AddVoter", "role": "admin" },
+    { "path": "/manage-election", "component": "ManageElection", "role": "admin" },
+    { "path": "/election-report", "component": "ElectionReport", "role": "admin" },
+    { "path": "/position", "component": "Positions", "role": "admin" }
+  ],
+  "components": {
+    "LoginPage": "Handles serial-number login and role redirect",
+    "Dashboard": "Shared component with separate admin and voter views",
+    "VoteNow": "Grouped voting by position with Supabase vote submission",
+    "ElectionReport": "Generates visual report with Recharts, exportable to PDF",
+    "ManageElection": "Sets election date and process duration with live countdowns",
+    "ViewCandidates": "Shows candidates from a Supabase view, allows image uploads",
+    "ViewVoters": "Lists and adds new voters",
+    "Positions": "Adds and lists election positions with candidate count",
+    "AuthContext": "Custom login, logout, and role handling via serial number",
+    "ElectionContext": "Manages election start and end countdowns globally"
+  },
+  "features": [
+    "Real-time countdown to election start and end",
+    "Photo uploads to Supabase storage",
+    "Secure serial-number login with role auto-assignment",
+    "PDF report generation of election results",
+    "Separate voter/admin dashboards with protected routes"
+  ]
+}

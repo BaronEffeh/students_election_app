@@ -43,6 +43,7 @@ export default function Login() {
     if (user?.role === 'admin') {
       navigate('/dashboard');
     } else if (user?.role === 'voter') {
+      console.log('user.id:', user?.id)
       navigate('/dashboard');
     } else {
       navigate('/'); // fallback

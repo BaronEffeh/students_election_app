@@ -310,6 +310,9 @@ export default function ViewVoters() {
   );
 }
 
+
+
+
 // export default function ViewVoters() {
 //   const [open, setOpen] = useState(false);
 //   const [formData, setFormData] = useState({ name: '', class: '', serial_number: '' });

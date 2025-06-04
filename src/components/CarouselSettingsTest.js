@@ -5,7 +5,7 @@ const carouselSettings = {
   dots: true,
   infinite: true,
   speed: 500,
-  slidesToShow: 3, // Adjust based on screen size
+  slidesToShow: 3,
   slidesToScroll: 1,
   responsive: [
     {

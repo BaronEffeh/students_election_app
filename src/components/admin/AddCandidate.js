@@ -48,28 +48,3 @@ export default function AddCandidate() {
     </Container>
   );
 }
-
-
-
-
-// import React from 'react';
-// import { Container, Typography, TextField, Button, Box } from '@mui/material';
-
-// export default function AddCandidate() {
-//   const handleSubmit = (e) => {
-//     e.preventDefault();
-//     // TODO: Integrate API call
-//     alert('Candidate submitted');
-//   };
-
-//   return (
-//     <Container maxWidth="sm">
-//       <Typography variant="h5" mt={4} mb={2}>Add Candidate</Typography>
-//       <Box component="form" onSubmit={handleSubmit}>
-//         <TextField fullWidth label="Full Name" margin="normal" required />
-//         <TextField fullWidth label="Position" margin="normal" required />
-//         <Button variant="contained" type="submit">Submit</Button>
-//       </Box>
-//     </Container>
-//   );
-// }

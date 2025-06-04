@@ -223,6 +223,7 @@ export default function ViewVoters() {
                 <TableRow>
                   <TableCell colSpan={3} align="center">
                     <CircularProgress size={24} color="inherit" />
+                    <Typography mt={2}>Loading voters...</Typography>
                   </TableCell>
                 </TableRow>
                 // <TableRow>
